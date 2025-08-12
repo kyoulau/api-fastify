@@ -1,0 +1,14 @@
+GET http://localhost:3333/courses
+
+###
+POST http://localhost:3333/courses
+Content-Type: application/json
+
+
+{
+  "title": "Curso de Node.js da Laura"
+}
+
+###
+
+GET http://localhost:3333/courses/5548f1a8-20b2-4f40-8baf-7b1a1a10c3be
