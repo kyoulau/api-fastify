@@ -1,5 +1,13 @@
-import crypto from "node:crypto"
+
 import fastify from "fastify"
+
+import fastifySwagger from "@fastify/swagger"
+import { validatorCompiler, serializerCompiler, type ZodTypeProvider , jsonSchemaTransform} from "fastify-type-provider-zod"
+import fastifySwaggerUi from "@fastify/swagger-ui"
+import { getCoursesRoute } from "./src/routes/get-course.ts"
+import { getCoursesByIdRoute } from "./src/routes/get-course-by-id.ts"
+import { createCoursesRoute } from "./src/routes/create-course.ts"
+import scalarAPIReference from '@scalar/fastify-api-reference'
 
 const server = fastify({
   logger: {
@@ -11,52 +19,32 @@ const server = fastify({
       },
     },
   }
+}).withTypeProvider<ZodTypeProvider>()
+
+server.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: 'Fastify API',
+      version: '1.0.0'
+    }
+  },
+  transform: jsonSchemaTransform
 })
 
-const courses = [
-  { id: '1', title: 'Curso de Node.js' },
-  { id: '2', title: 'Curso de React' },
-  { id: '3', title: 'Curso de React Native' },
-]
+server.register(scalarAPIReference, {
+    routePrefix: '/docs',
+  })
 
-server.get('/courses', async (request, reply) => {
-  return { hello: 'world' }
-})
 
-// oq muda é o recurso
-server.post('/courses', async (request, reply) => {
-  type Body = {
-    title: string
-  }
+server.setValidatorCompiler(validatorCompiler)
+server.setSerializerCompiler(serializerCompiler)
 
-  const body = request.body as Body
+// validação - zod - valida entrada
+//  serializa - zod - transforma saida
 
-  const randomId = crypto.randomUUID()
-  const courseTtile = body.title
-
-  if (!courseTtile) {
-    return reply.status(400).send({ error: 'Titulo nao informado' })
-  }
-  courses.push({ id: randomId, title: courseTtile })
-  return reply.status(201).send({randomId})
-})
-
-server.get('/courses/:id', async (request, reply) => {
-  type Params = {
-    id: string
-  }
-  const param = request.params as Params
-
-  const courseId =  param.id
-
-  const course = courses.find(course => course.id === courseId)
-
-  if (!course) {
-    return reply.status(404).send({ error: 'Curso nao encontrado' })
-  }
-
-  return reply.send(course)
-})
+server.register(getCoursesRoute)
+server.register(getCoursesByIdRoute)
+server.register(createCoursesRoute)
 
 server.listen({port: 3333}).then(address => {
   console.log(`Server listening on ${address}`)
