@@ -1,0 +1,12 @@
+services:
+    db:
+      image: postgres:17
+      container_name: api-matricula-node-db
+      restart: unless-stopped
+      ports:
+        - "5432:5432"
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=laura
+        - POSTGRES_DB=api-matricula
+

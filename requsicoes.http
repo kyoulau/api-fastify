@@ -6,9 +6,10 @@ Content-Type: application/json
 
 
 {
-  "title": "Curso de Node.js da Laura"
+  "title": "Curso de Docker da Laura 2",
+  "description": "Curso de Docker da Laura"
 }
 
 ###
 
-GET http://localhost:3333/courses/5548f1a8-20b2-4f40-8baf-7b1a1a10c3be
+GET http://localhost:3333/courses/89d653
