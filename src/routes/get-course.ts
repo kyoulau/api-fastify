@@ -8,6 +8,9 @@ export const getCoursesRoute: FastifyPluginAsyncZod = async (server) => {
     schema: {
       tags: ['courses'],
       summary: 'Listagem de cursos',
+      querystring: z.object({
+        search: z.string().optional()
+      }),
       response: {
         200: z.object({
           courses: z.array(
@@ -20,6 +23,9 @@ export const getCoursesRoute: FastifyPluginAsyncZod = async (server) => {
       }
     }
   } , async (request, reply) => {
+
+    const { search  } = request.query
+
     const result = await db.select(
       {
         id: courses.id,

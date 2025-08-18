@@ -33,6 +33,9 @@ server.register(fastifySwagger, {
 
 server.register(scalarAPIReference, {
     routePrefix: '/docs',
+    configuration: {
+      theme: 'kepler',
+    }
   })
 
 
